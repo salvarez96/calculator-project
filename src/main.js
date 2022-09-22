@@ -1,4 +1,6 @@
 const calculations = document.querySelector(".operations-box--calculations");
+const ac = document.querySelector('#ac');
+const backspace = document.querySelector('#backspace');
 
 const arrKeyCode = [];
 const arrKeyNameCode = [];
@@ -67,6 +69,7 @@ let bigTotal;
 
 function writeNumber(numberKey){
     let keyCode = numberKey.keyCode;
+    let keyName = numberKey.key;
     
     if(keyCode === 189 || keyCode === 109 && calculations.innerText === '0'){
         calculations.innerText = '-'
@@ -85,19 +88,43 @@ function writeNumber(numberKey){
         || !calculations.innerText.includes('.') && keyCode === 110
         ){
         if(calculations.innerText.length < 18){
-            const numberInput = Number(numberKey.key);
+            const numberInput = Number(keyName);
             console.log(numberInput);
             if(calculations.innerText === '-0.' || calculations.innerText === '0.' || calculations.innerText != 0){
-                calculations.innerText += numberKey.key;
+                calculations.innerText += keyName;
                 count = Number(calculations.innerText);
             } else {
-                calculations.innerText = numberKey.key;
+                calculations.innerText = keyName;
             }
         }
     }
     console.log(count)
+    if(keyName === 'Backspace'){
+        eraseOneNumber();
+    }
 }
 
+function eraseOneNumber(){
+    if(calculations.innerText != 0){
+        const newArr = calculations.innerText.split('');
+        console.log(newArr);
+        newArr.pop();
+        console.log(newArr.join(''));
+        calculations.innerText = newArr.join('');
+        if(newArr.length < 1){
+            calculations.innerText = 0;
+        }
+    }
+}
+
+function eraseAll(){
+    calculations.innerText = 0;
+    count = 0;
+}
+
+
+backspace.addEventListener('click', eraseOneNumber);
+ac.addEventListener('click', eraseAll);
 document.addEventListener('keydown', writeNumber);
 
 // const getKey = (keyPress) => {
