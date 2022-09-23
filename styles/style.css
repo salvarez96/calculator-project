@@ -66,6 +66,11 @@ hr{
     border-radius: 10px;
 }
 
+.DOM-activated{
+    background: rgba(0, 0, 255, 0.3);
+    border-radius: 10px;
+}
+
 .calc-button:active{
     background: rgba(0, 0, 255, 0.2);
     border-radius: 10px;

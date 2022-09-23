@@ -1,4 +1,5 @@
 const calculations = document.querySelector(".operations-box--calculations");
+const resultsText = document.querySelector('.operations-box--results');
 const ac = document.querySelector('#ac');
 const backspace = document.querySelector('#backspace');
 
@@ -62,7 +63,7 @@ const keyBoardOperationKeyCode = {
 
 const saveAll = [];
 let count = 0;
-let numbers = [0];
+let numbers = [];
 let results = [];
 let total = [];
 let bigTotal;
@@ -71,45 +72,109 @@ function writeNumber(numberKey){
     let keyCode = numberKey.keyCode;
     let keyName = numberKey.key;
     
-    if(keyCode === 189 || keyCode === 109 && calculations.innerText === '0'){
+    if(keyName === '-' && calculations.innerText === '0'){
         calculations.innerText = '-'
     }
 
-    if(keyCode === 110 && calculations.innerText === '0'){
+    if(keyName === '.' && calculations.innerText === '0'){
         calculations.innerText = '0.'
     }
     
-    if(calculations.innerText[0] === '-' && keyCode === 110 && !calculations.innerText.includes('-0.')){
+    if(calculations.innerText[0] === '-' && keyName === '.' && !calculations.innerText.includes('-0.')){
         calculations.innerText = '-0.'
     }
     
     if(    keyCode > 95 && keyCode < 106 
         || keyCode > 47 && keyCode < 59 
-        || !calculations.innerText.includes('.') && keyCode === 110
+        || !calculations.innerText.includes('.') && keyName === '.'
         ){
         if(calculations.innerText.length < 18){
-            const numberInput = Number(keyName);
-            console.log(numberInput);
             if(calculations.innerText === '-0.' || calculations.innerText === '0.' || calculations.innerText != 0){
                 calculations.innerText += keyName;
                 count = Number(calculations.innerText);
             } else {
                 calculations.innerText = keyName;
+                count = Number(calculations.innerText);
             }
         }
     }
-    console.log(count)
+
+    switch (keyName) {
+        case '+':
+            total.push(count);
+            calculations.innerText = 0;
+            resultsText.innerText = total[0];
+            if(total.length > 2){
+                total.pop();
+            }
+            if(results.length < 2){
+                results.push(Number(resultsText.innerText));
+                resultsText.innerText = results[0];
+            } 
+            if(results.length > 1){
+                results[0] = count;
+                results[1] = results[results.length - 1] + results[results.length - 2];
+            }
+            // console.log();
+            if(results.length > 1){
+                resultsText.innerText = results[1];
+            }
+            console.log(results);
+            console.log(total);
+
+            count = 0;
+            // if(total.length > 0){
+            //     numbers.push((total[total.length - 1]) + (total[total.length - 2]));
+            //     console.log(numbers);
+            //     console.log(total[length-1]);
+            //     console.log(total[length-2]);
+            // }
+            break;
+        // case '-':
+        //     total.push(count);
+        //     calculations.innerText = 0;
+        //     count = 0;
+        //     break;
+        // case '*':
+        //     total.push(count);
+        //     calculations.innerText = 0;
+        //     count = 0;
+        //     break;
+        // case '/':
+        //     total.push(count);
+        //     calculations.innerText = 0;
+        //     count = 0;
+        //     break;
+        // case 'Enter':
+        //     total.push(count);
+        //     calculations.innerText = 0;
+        //     count = 0;
+        //     break;
+    }
+    console.log('Count: ' + count)
+    // console.log('Total: ' + total)
+    // console.log(keyName)
     if(keyName === 'Backspace'){
         eraseOneNumber();
+        backspace.addEventListener('onkeypress',keyPressActive(backspace));
     }
+}
+
+function keyPressActive(button){
+    function addClass(){
+        button.classList.add('DOM-activated');
+    }
+    addClass();
+    function deleteClass(){
+        button.classList.remove('DOM-activated');
+    }
+    setTimeout(deleteClass, 10);
 }
 
 function eraseOneNumber(){
     if(calculations.innerText != 0){
         const newArr = calculations.innerText.split('');
-        console.log(newArr);
         newArr.pop();
-        console.log(newArr.join(''));
         calculations.innerText = newArr.join('');
         if(newArr.length < 1){
             calculations.innerText = 0;
@@ -119,6 +184,8 @@ function eraseOneNumber(){
 
 function eraseAll(){
     calculations.innerText = 0;
+    resultsText.innerText = '';
+    results = [];
     count = 0;
 }
 
